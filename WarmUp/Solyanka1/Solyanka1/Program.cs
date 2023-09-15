@@ -34,38 +34,19 @@ namespace Solyanka1
             return true;
         }
 
-        static string InverseBinary(string s)
+        static StringBuilder ThueMorseSB(int N, StringBuilder SB)
         {
-            string InvStr = "";
-            foreach (char c in s) {
-                if (c == '1') { InvStr += '0'; }
-                else { InvStr += '1'; }
-            }
-            return InvStr;
-        }
-
-        static string GenerateThueMorse(int N, string CurNum = "0")
-        {
-            if (N == 0) { return CurNum; }
-            return GenerateThueMorse(N - 1, CurNum + InverseBinary(CurNum));
-        }
-
-        static StringBuilder InverseBinarySB(StringBuilder SB)
-        {
-            StringBuilder InvSB = new StringBuilder();
-            for (int i = 0; i < SB.Length; i++)
+            while (N > SB.Length)
             {
-                if (SB[i] == '1') { InvSB.Append('0'); }
-                else { InvSB.Append('1'); }
+                int len = SB.Length;
+                for (int i = 0; i < len; i++)
+                {
+                    if (SB[i] == '1') { SB.Append('0'); }
+                    else { SB.Append('1'); }
+                    if (SB.Length == N) { break; }
+                }
             }
-            return InvSB;
-        }
-
-        static StringBuilder ThueMorseSB(int N, StringBuilder SB) 
-        {
-            if (N == 0) { return SB; }    
-            SB.Append(InverseBinarySB(SB));
-            return ThueMorseSB(N - 1, SB);
+            return SB;
         }
 
         static string GenerateThueMorseSB(int N)
