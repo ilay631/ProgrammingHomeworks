@@ -119,5 +119,75 @@ namespace Spanish.Tests
             // Assert
             CollectionAssert.AreEqual(expected, res);
         }
+
+        [TestMethod()]
+        public void GetSpanish3DigitMasculineTest()
+        {
+            // Arrange
+            string[] expected = new string[900];
+            for (int i = 0; i < expected.Length; i++)
+                expected[i] = (i + 100).ToWords(GrammaticalGender.Masculine, new CultureInfo("es-SP"));
+
+            // Act
+            string[] res = new string[900];
+            for (uint i = 0; i < res.Length; i++)
+                res[i] = Program.GetSpanish3Digit(i + 100, Program.Gender.Masculine);
+
+            // for (uint i = 0; i < res.Length; i++)
+            //    Console.WriteLine("{0} - {1}", res[i], expected[i]);
+
+            // Assert
+
+            CollectionAssert.AreEqual(expected, res);
+        }
+
+        [TestMethod()]
+        public void GetSpanish3DigitNeuterTest()
+        {
+            // Arrange
+            string[] expected = new string[900];
+            for (int i = 0; i < expected.Length; i++)
+                expected[i] = (i + 100).ToWords(GrammaticalGender.Neuter, new CultureInfo("es-SP"));
+
+            // Act
+            string[] res = new string[900];
+            for (uint i = 0; i < res.Length; i++)
+                res[i] = Program.GetSpanish3Digit(i + 100, Program.Gender.Neuter);
+
+            // Assert
+
+            CollectionAssert.AreEqual(expected, res);
+        }
+
+        [TestMethod()]
+        public void GetSpanish3DigitFemineTest()
+        {
+            // Arrange
+            string[] expected = new string[900];
+            for (int i = 0; i < expected.Length; i++)
+                expected[i] = (i + 100).ToWords(GrammaticalGender.Feminine, new CultureInfo("es-SP"));
+
+            // Act
+            string[] res = new string[900];
+            for (uint i = 0; i < res.Length; i++)
+                res[i] = Program.GetSpanish3Digit(i + 100, Program.Gender.Feminine);
+
+            // Assert
+
+            CollectionAssert.AreEqual(expected, res);
+        }
+
+        [TestMethod()]
+        public void TranslateToSpanishTest()
+        {
+            for (int i = 0; i <= 1_000_000_000; i++)
+            {
+                string res = Program.TranslateToSpanish((uint) i, Program.Gender.Neuter);
+                string exp = i.ToWords(GrammaticalGender.Neuter, new CultureInfo("es-SP"));
+                Assert.AreEqual(exp, res);
+            }
+
+
+        }
     }
 }

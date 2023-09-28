@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Humanizer;
-
+using System.Globalization;
 
 namespace Spanish
 {
@@ -65,7 +65,7 @@ namespace Spanish
                 switch(gen)
                 {
                     case Gender.Masculine:
-                        return "uno";
+                        return "un";
                     case Gender.Feminine:
                         return "una";
                     case Gender.Neuter:
@@ -83,7 +83,7 @@ namespace Spanish
                 switch (gen)
                 {
                     case Gender.Masculine:
-                        return "veintiuno";
+                        return "veintiún";
                     case Gender.Feminine:
                         return "veintiuna";
                     case Gender.Neuter:
@@ -96,10 +96,89 @@ namespace Spanish
             return spanishDozens[num / 10 - 1] + " y " + GetSpanishDigit(num % 10, gen);
         }
 
-        static string TranslateToSpanish(uint num, Gender gen)
+        /// <summary>
+        /// This constructor initializes the new Point to
+        /// (<paramref name="xPosition"/>,<paramref name="yPosition"/>).
+        /// </summary>
+        public static string GetSpanish3Digit(uint num, Gender gen)
         {
 
-            return "";
+            string[] spanishHundredsMale = { "ciento", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos" };
+            string[] spanishHundredsFemale = { "ciento", "doscientas", "trescientas", "cuatrocientas", "quinientas", "seiscientas", "setecientas", "ochocientas", "novecientas" };
+            if (num == 100)
+                return "cien";
+
+            uint hundred = num / 100;
+            uint dozens = num % 100 / 10;
+            uint units = num % 10;
+
+            if (dozens == 0 && units == 0) { 
+                if (gen == Gender.Feminine)
+                    return spanishHundredsFemale[hundred - 1];
+                else
+                    return spanishHundredsMale[hundred - 1];
+            }
+            else if (dozens == 0) {
+                if (gen == Gender.Feminine)
+                    return spanishHundredsFemale[hundred - 1] + " " + GetSpanishDigit(units, gen);
+                else
+                    return spanishHundredsMale[hundred - 1] + " " + GetSpanishDigit(units, gen);
+            }
+            else
+            {
+                if (gen == Gender.Feminine)
+                    return spanishHundredsFemale[hundred - 1] + " " + GetSpanish2Digit(num % 100, gen);
+                else
+                    return spanishHundredsMale[hundred - 1] + " " + GetSpanish2Digit(num % 100, gen);
+            }
+        }
+
+        public static string GetSpanishNumber(uint num, Gender gen)
+        {
+            if (num >= 100)
+                return GetSpanish3Digit(num, gen);
+            else if (num >= 10 && num < 100)
+                return GetSpanish2Digit(num, gen);
+            else
+                return GetSpanishDigit(num, gen);
+        }
+
+        public static string TranslateToSpanish(uint num, Gender gen)
+        {
+            if (num == 0)
+                return "cero";
+
+            uint millions = num / 1000000;
+            uint thousands = num % 1000000 / 1000;
+            uint units = num % 1000;
+
+            string res = "";
+
+            if (millions == 1)
+                res += "un millón";
+            else if (millions > 1)
+                res += GetSpanishNumber(millions, Gender.Masculine) + " millones";
+
+            if (millions != 0 && (thousands != 0 || units != 0))
+                res += " ";
+
+            if (thousands == 1)
+                res += "mil";
+            else if (thousands > 1)
+                if (gen == Gender.Masculine || gen == Gender.Neuter)
+                    res += GetSpanishNumber(thousands, Gender.Masculine) + " mil";
+                else
+                    res += GetSpanishNumber(thousands, gen) + " mil";
+
+            if (thousands != 0 && units != 0)
+                res += " ";
+
+            if (units != 0)
+                if (gen == Gender.Masculine)
+                    res += GetSpanishNumber(units, Gender.Neuter);
+                else
+                    res += GetSpanishNumber(units, gen);
+            return res;
         }
     }
 }
